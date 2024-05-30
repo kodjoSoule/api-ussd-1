@@ -4,36 +4,41 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 3000;
 
+// Configuration du middleware pour analyser les requêtes entrantes
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Définir une route POST pour gérer les requêtes USSD
 app.post("/ussd", (req, res) => {
 	const { sessionId, serviceCode, phoneNumber, text } = req.body;
 
 	let response = "";
 
+	// Logique pour les différentes étapes du service USSD
 	if (text === "") {
-		response = "Welcome To Demo Service \n";
-		response += "1. My account \n";
-		response += "2. My phone number";
+		response = "Bienvenue au Service Démo \n";
+		response += "1. Mon compte \n";
+		response += "2. Mon numéro de téléphone";
 	} else if (text === "1") {
-		response = "CON Choose account information you want to view \n";
-		response += "1. Account balance \n";
-		response += "2. Account number";
+		response = "CON Choisissez l'information que vous voulez consulter \n";
+		response += "1. Solde du compte \n";
+		response += "2. Numéro du compte";
 	} else if (text === "2") {
-		response = `END Your phone number is ${phoneNumber}`;
+		response = `END Votre numéro de téléphone est ${phoneNumber}`;
 	} else if (text === "1*1") {
-		response = "END Your account balance is KES 10,000";
+		response = "END Le solde de votre compte est de 10.000 FCFA";
 	} else if (text === "1*2") {
-		response = "END Your account number is ACC1001";
+		response = "END Votre numéro de compte est ACC1001";
 	} else {
-		response = "END Invalid input";
+		response = "END Entrée invalide";
 	}
 
+	// Définir le type de contenu et envoyer la réponse
 	res.set("Content-Type", "text/plain");
 	res.send(response);
 });
 
+// Lancer le serveur et écouter les requêtes sur le port 3000
 app.listen(port, () => {
-	console.log(`USSD app listening at http://localhost:${port}`);
+	console.log(`L'application USSD écoute sur http://localhost:${port}`);
 });
